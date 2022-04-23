@@ -4,3 +4,4 @@
 .project
 #maven
 target
+.DS_Store
