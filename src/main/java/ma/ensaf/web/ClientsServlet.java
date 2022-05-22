@@ -1,4 +1,4 @@
-package ma.ensaf.servlet;
+package ma.ensaf.web;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -9,7 +9,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import ma.ensaf.model.Client;
+import ma.ensaf.entity.Client;
 import ma.ensaf.service.ClientService;
 
 @WebServlet(name = "Clients", urlPatterns = { "/clients/*" })

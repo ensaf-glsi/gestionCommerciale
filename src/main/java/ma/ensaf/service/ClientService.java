@@ -6,7 +6,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import lombok.Getter;
-import ma.ensaf.model.Client;
+import ma.ensaf.entity.Client;
 
 public class ClientService {
 	

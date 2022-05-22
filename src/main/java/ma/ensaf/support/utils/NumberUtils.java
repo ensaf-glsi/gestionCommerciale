@@ -1,4 +1,4 @@
-package ma.ensaf.utils;
+package ma.ensaf.support.utils;
 
 public class NumberUtils {
 

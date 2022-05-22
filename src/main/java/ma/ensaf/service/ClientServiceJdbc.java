@@ -2,7 +2,7 @@ package ma.ensaf.service;
 
 import java.util.Optional;
 
-import ma.ensaf.model.Client;
+import ma.ensaf.entity.Client;
 
 public class ClientServiceJdbc {
 	

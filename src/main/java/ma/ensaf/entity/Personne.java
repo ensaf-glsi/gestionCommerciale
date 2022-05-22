@@ -1,8 +1,8 @@
-package ma.ensaf.model;
+package ma.ensaf.entity;
 
 import java.time.LocalDate;
 
-import ma.ensaf.utils.Identifiable;
+import ma.ensaf.support.utils.Identifiable;
 
 public class Personne implements Identifiable<Long> {
     private Long id;

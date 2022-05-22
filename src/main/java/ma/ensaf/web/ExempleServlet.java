@@ -1,4 +1,4 @@
-package ma.ensaf.servlet;
+package ma.ensaf.web;
 
 import java.io.IOException;
 import java.io.PrintWriter;

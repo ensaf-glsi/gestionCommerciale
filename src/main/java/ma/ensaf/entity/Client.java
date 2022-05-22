@@ -1,4 +1,4 @@
-package ma.ensaf.model;
+package ma.ensaf.entity;
 
 import java.util.Objects;
 
@@ -13,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 @Getter @Setter
 @ToString
 public class Client {
-	private Integer id;
+	private Long id;
 	private String nom;
 	private String tel;
 	private String email;

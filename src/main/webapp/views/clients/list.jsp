@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<%@page import="ma.ensaf.model.Client"%>
-<%@page import="java.util.List"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
 <meta charset="UTF-8">
@@ -21,26 +20,17 @@
 			</tr>
 		</thead>
 		<tbody>
-			<%
-			List<Client> list = (List<Client>) request.getAttribute("list");
-			for (Client c : list) {
-			%>
-			<tr>
-				<td>
-					<%
-					out.print(c.getNom());
-					%>
-				</td>
-				<td><%=c.getEmail()%></td>
-				<td><%=c.getTel()%></td>
-				<td><%=c.getAdresse()%></td>
-				<td>
-					<a href="${pageContext.request.contextPath}/clients/edit?id=<%= c.getId()%>">Modifier</a>
-					 delete</td>
-			</tr>
-			<%
-			}
-			%>
+		    <c:forEach items="${list}" var="item">
+				<tr>
+					<td>${item.nom}</td>
+					<td>${item.email}</td>
+					<td>${item.tel}</td>
+					<td>${item.adresse}</td>
+					<td>
+						<a href="${pageContext.request.contextPath}/clients/edit?id=${item.id}">Modifier</a>
+						 delete</td>
+				</tr>
+			</c:forEach>
 		</tbody>
 	</table>
 

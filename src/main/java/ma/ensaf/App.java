@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-import ma.ensaf.model.Personne;
-import ma.ensaf.utils.Crud;
+import ma.ensaf.entity.Personne;
+import ma.ensaf.support.utils.Crud;
 
 public class App {
 
