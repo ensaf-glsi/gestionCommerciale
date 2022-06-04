@@ -2,12 +2,14 @@ package ma.ensaf.support.utils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import ma.ensaf.entity.ProductCustomer;
+import ma.ensaf.dao.ProductDao;
 import ma.ensaf.support.exceptions.TechnicalException;
 
 public class ReflectUtils {
@@ -21,10 +23,11 @@ public class ReflectUtils {
 			throw new TechnicalException("Erreur interne, merci de contacter l'admin");
 		}
 	}
+
 	public static Object getValue(String fieldName, Object object) {
 		return getValue(getField(object.getClass(), fieldName), object);
 	}
-	
+
 	public static Object getValue(Field field, Object object) {
 		try {
 			field.setAccessible(true);
@@ -51,16 +54,18 @@ public class ReflectUtils {
 			}
 		}
 	}
+
 	public static void setValue(Object object, String fieldName, Object fieldValue) {
 		setValue(object, getField(object.getClass(), fieldName), fieldValue);
 	}
+
 	public static Field getField(Class<?> clazz, String fieldName) {
 		try {
 			return clazz.getDeclaredField(fieldName);
 		} catch (NoSuchFieldException e) {
 			if (Objects.equals(clazz.getSuperclass(), Object.class)) {
 				e.printStackTrace();
-				throw new TechnicalException("Erreur interne, merci de contacter l'admin");				
+				throw new TechnicalException("Erreur interne, merci de contacter l'admin");
 			}
 			return getField(clazz.getSuperclass(), fieldName);
 		} catch (SecurityException e) {
@@ -68,7 +73,7 @@ public class ReflectUtils {
 			throw new TechnicalException("Erreur interne, merci de contacter l'admin");
 		}
 	}
-	
+
 	public static List<Field> getAllDeclaredFields(Class<?> clazz) {
 		if (Objects.equals(clazz.getSuperclass(), Object.class)) {
 			return Arrays.asList(clazz.getDeclaredFields());
@@ -78,30 +83,43 @@ public class ReflectUtils {
 		result.addAll(fields);
 		return result;
 	}
-	
-	public static void main(String[] args) {
-		System.out.println(Object.class.getSuperclass());
-		
-		System.out.println(getField(ProductCustomer.class, "customer"));
-		System.out.println(getField(ProductCustomer.class, "name"));
-		System.out.println(getField(ProductCustomer.class, "id"));
-		System.out.println(getField(ProductCustomer.class, "other")); // nullpointerexception
-		//1 ProductCustomer
-		// result = [id, name, price, unit]
-		// fields = [customer]
-		// result = [id, name, price, unit, customer]
-		
-		//2 Product
-		// result = [id]
-		// fields = [name, price, unit]
-		// result = [id, name, price, unit]
-		
-		//3 EntityId
-		// result = []
-		// fields = [id]
-		// result = [id]
-		
-		//4 Object
-		//[]
+
+	@SuppressWarnings("unchecked")
+	public static <C> Class<C> getParameterizedType(Class<?> target, int index) {
+		Type[] parameterizedTypes = getParameterizedTypes(target);
+		if (parameterizedTypes != null && parameterizedTypes.length > index) {
+			return (Class<C>) parameterizedTypes[index];
+		}
+		return null;
 	}
+
+	public static Type[] getParameterizedTypes(Class<?> target) {
+		ParameterizedType type = getGenericType(target);
+		if (type != null) {
+			return type.getActualTypeArguments();
+		}
+		return null;
+	}
+
+	public static ParameterizedType getGenericType(Class<?> target) {
+		if (target == null)
+			return null;
+		Type[] types = target.getGenericInterfaces();
+		if (types.length > 0 && types[0] instanceof ParameterizedType) {
+			return (ParameterizedType) types[0];
+		}
+		Type type = target.getGenericSuperclass();
+		if (type != null && type instanceof ParameterizedType) {
+			return (ParameterizedType) type;
+		}
+		return null;
+	}
+
+	public static void main(String[] args) {
+		Class<?> clazz = ProductDao.class;
+		System.out.println(getGenericType(clazz));
+		System.out.println(getParameterizedTypes(clazz));
+		System.out.println(getParameterizedType(clazz, 0));
+	}
+
 }

@@ -10,7 +10,6 @@ import java.util.function.Function;
 import ma.ensaf.dao.ProductDao;
 import ma.ensaf.entity.Personne;
 import ma.ensaf.entity.Product;
-import ma.ensaf.entity.ProductCustomer;
 import ma.ensaf.support.utils.Crud;
 import ma.ensaf.support.utils.ReflectUtils;
 
@@ -80,7 +79,7 @@ public class App {
     }
     
     void testProduct() {
-    	ProductCustomer p = ProductCustomer.builder().id(1L).name("clavier").build();
+    	Product p = Product.builder().id(1L).name("clavier").build();
     	System.out.println(p);
     	List<Field> declaredFields = ReflectUtils.getAllDeclaredFields(p.getClass());
     	for (Field field : declaredFields) {
