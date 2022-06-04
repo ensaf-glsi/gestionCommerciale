@@ -18,11 +18,6 @@ public class ClientDao {
 	private final static String COLUMN_EMAIL = "email";
 	private final static String COLUMN_ADRESSE = "adresse";
 	
-//	private String nom;
-//	private String tel;
-//	private String email;
-//	private String adresse;
-	
 	protected Map<String, Object> toMap(Client client) {
 		return Map.of(
 				COLUMN_NOM, client.getNom(),

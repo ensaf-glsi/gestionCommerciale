@@ -1,17 +1,23 @@
 package ma.ensaf;
 
-import java.lang.StackWalker.Option;
+import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import ma.ensaf.dao.ProductDao;
 import ma.ensaf.entity.Personne;
+import ma.ensaf.entity.Product;
+import ma.ensaf.entity.ProductCustomer;
 import ma.ensaf.support.utils.Crud;
+import ma.ensaf.support.utils.ReflectUtils;
 
 public class App {
 
     private List<Personne> personnes = new ArrayList<>();
+	ProductDao productDao = new ProductDao();
 
     public App() {
         Personne p1 = new Personne(1L, "nom1", "prenom1", 21);
@@ -25,7 +31,63 @@ public class App {
         // ex2();
         // ex2J17();
         // ex3J17(21);
-        exOptional();
+//        exOptional();
+//        testProduct();
+        testCreateGeneric();
+//        testUpdateGeneric();
+//        testFindById();
+        testDeleteById();
+        testFindAll();
+    }
+    
+    void testDeleteById() {
+    	System.out.println("===== delete by id ===");
+    	productDao.delete(6L);
+    	System.out.println("===== /delete by id ===");
+    }
+    void testFindAll() {
+    	System.out.println("===== find all ===");
+    	System.out.println(productDao.findAll());
+    	System.out.println("===== /find all ===");
+    }
+    void testFindById() {
+    	System.out.println("===== find by id ===");
+    	System.out.println(productDao.findById(1L));
+    	System.out.println(productDao.findById(10L));
+    	System.out.println("===== /find by id ===");
+    }
+    
+    void testUpdateGeneric() {
+    	System.out.println("===== update ===");
+    	Product p = Product.builder().id(3L).name("clavier")
+    			.price(new BigDecimal(30))
+    			.unit("UNITE")
+    			.build();
+    	System.out.println(productDao.update(p));
+    	System.out.println("produit mis a jour avec succes : " + p);
+    	System.out.println("===== /update ===");
+    }
+    
+    void testCreateGeneric() {
+    	System.out.println("===== create ===");
+    	Product p = Product.builder().id(1L).name("clavier with annot")
+    			.price(new BigDecimal(70))
+    			.unit("UNITE")
+    			.build();
+    	p = productDao.create(p);
+    	System.out.println("produit insere avec succes : " + p);
+    	System.out.println("===== /create ===");
+    }
+    
+    void testProduct() {
+    	ProductCustomer p = ProductCustomer.builder().id(1L).name("clavier").build();
+    	System.out.println(p);
+    	List<Field> declaredFields = ReflectUtils.getAllDeclaredFields(p.getClass());
+    	for (Field field : declaredFields) {
+			System.out.println(field.getName());
+		}
+    	System.out.println(p.getClass().getSimpleName());
+    	
     }
     public static void main(String[] args) {
         new App();

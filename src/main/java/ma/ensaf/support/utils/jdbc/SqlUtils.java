@@ -1,5 +1,6 @@
 package ma.ensaf.support.utils.jdbc;
 
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,13 +8,18 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
-import ma.ensaf.entity.Client;
+import ma.ensaf.support.dao.annotation.Column;
+import ma.ensaf.support.dao.annotation.Table;
+import ma.ensaf.support.dao.annotation.Transient;
 import ma.ensaf.support.exceptions.TechnicalException;
+import ma.ensaf.support.utils.ReflectUtils;
 
 public class SqlUtils {
 	// trois couches
@@ -21,25 +27,23 @@ public class SqlUtils {
 	// couche metier ou service : une couche contenant les règles de gestion, des appels la couche dao
 	// couche presentation ou web : on implemente MVC, on appel la couche metier 
 	
+	public static void delete(Object object) {
+		String tableName = getTableName(object.getClass());
+		Object id = ReflectUtils.getValue("id", object);
+		delete(tableName, id);
+	}
 
-	public static int executeUpdate(String query, List<Object> params) {
-		try {
-			Connection connection = JdbcConnection.getConnection();
-			PreparedStatement ps = connection.prepareStatement(query);
-			setParams(ps, params);
-			int result = ps.executeUpdate();
-			ps.close();
-			return result;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new TechnicalException("Erreur interne, merci de contacter l'admin", e);
-		}
+	public static <E> int update(E object) {
+		String tableName = getTableName(object.getClass());
+		Object id = ReflectUtils.getValue("id", object);
+		return update(tableName, id, getFields(object));
 	}
-	
-	public static int update(Object object) {
-		return 0;
-	}
-	public static Object add(Object object) {
+
+	// TODO transaction
+	public static <E> E create(E object) {
+		String tableName = getTableName(object.getClass());
+		Long id = insert(tableName, getFields(object));
+		ReflectUtils.setValue(object, "id", id);
 		return object;
 	}
 	// update PRODUITS set designation = 'Clavier filaire', prix = 35, quantite = 30 where id = 1;
@@ -151,11 +155,11 @@ public class SqlUtils {
 	public static <T> T findOne(String tableName, Object id, Function<ResultSet, T> rowMapper) {
 		Connection connection = JdbcConnection.getConnection();
 		try {
-			PreparedStatement ps = connection.prepareStatement(
-					new StringBuilder(3).append("select * from ")
+			String query = new StringBuilder(3).append("select * from ")
 					.append(tableName).append(" where id = ?")
-					.toString()
-			);
+					.toString();
+			System.out.println("findOne query : " + query);
+			PreparedStatement ps = connection.prepareStatement(query);
 			ps.setObject(1, id);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
@@ -212,10 +216,52 @@ public class SqlUtils {
 		return findList(queryBuilder.toString(), rowMapper);
 	}
 
-	public static void delete(String tableName, Long id) {
+	public static void delete(String tableName, Object id) {
 		StringBuilder queryBuilder = new StringBuilder(3);
 		queryBuilder.append("delete from ").append(tableName).append(" where id = ?");
 		executeUpdate(queryBuilder.toString(), Arrays.asList(id));
+	}
+
+	public static int executeUpdate(String query, List<Object> params) {
+		try {
+			Connection connection = JdbcConnection.getConnection();
+			PreparedStatement ps = connection.prepareStatement(query);
+			setParams(ps, params);
+			int result = ps.executeUpdate();
+			ps.close();
+			return result;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new TechnicalException("Erreur interne, merci de contacter l'admin", e);
+		}
+	}
+
+	public static String getFieldName(Field field) {
+		if (field.isAnnotationPresent(Column.class)) {
+			Column column = field.getAnnotation(Column.class);
+			return column.name();
+        }
+		return field.getName();
+	}
+	public static String getTableName(Class<?> clazz) {
+		if (clazz.isAnnotationPresent(Table.class)) {
+			Table table = clazz.getAnnotation(Table.class);
+			return table.value();
+		}
+		return clazz.getSimpleName();
+	}
+	private static Map<String, Object> getFields(Object object) {
+		List<Field> declaredFields = ReflectUtils.getAllDeclaredFields(object.getClass());
+		Map<String, Object> fields = new HashMap<>();
+		for (Field field : declaredFields) {
+			if (!field.isAnnotationPresent(Transient.class)) {
+				String fieldName = getFieldName(field);
+				if (!Objects.equals(fieldName, "id")) {
+					fields.put(fieldName, ReflectUtils.getValue(field, object));
+				}
+			}
+		}
+		return fields;
 	}
 
 }
