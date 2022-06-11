@@ -6,6 +6,13 @@ public class NumberUtils {
         if (a == null) return b == null;
         return a.equals(b);
     }
+    
+    public static long fact(Long n) {
+    	ObjectUtils.checkNotNullParameter(n, "n");
+    	if (n <= 1) return 1;
+    	return n * fact(n - 1);
+    }
+    
     // public static boolean equals(Double a, Double b) {
     //     if (a == null) return b == null;
     //     return a.equals(b);
@@ -15,12 +22,4 @@ public class NumberUtils {
     //     return a.equals(b);
     // }
 
-    public static void main(String[] args) {
-        Integer x = null, y = null;
-        System.out.println(equals(x, y));
-        System.out.println(equals(1, 2));
-        System.out.println(equals(1.2, 1.2));
-        System.out.println(equals(1L, 1L));
-    }
-    
 }
