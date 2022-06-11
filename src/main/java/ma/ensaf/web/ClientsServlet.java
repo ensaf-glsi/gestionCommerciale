@@ -82,7 +82,7 @@ public class ClientsServlet extends HttpServlet {
 			clientService.create(client);
 		} else {
 			// une modification
-			client.setId(Integer.parseInt(id));
+			client.setId(Long.parseLong(id));
 			clientService.update(client);
 		}
 		//TODO enregistrer en bd

@@ -10,7 +10,7 @@ import ma.ensaf.entity.Client;
 
 public class ClientService {
 	
-	private static Integer autoInc = 1;
+	private static long autoInc = 1;
 	@Getter
 	private List<Client> list = new ArrayList<>();
 	
@@ -27,7 +27,7 @@ public class ClientService {
 		}
 		list.set(index, client);
 	}
-	public void delete(Integer id) {
+	public void delete(long id) {
 		list.remove(Client.builder().id(id).build());
 	}
 	public Optional<Client> findById(Integer id) {
@@ -35,8 +35,8 @@ public class ClientService {
 	}
 	
 	public static void main(String[] args) {
-		Client c1 = Client.builder().id(1).nom("zouhir").build();
-		Client c2 = Client.builder().id(1).nom("zhi").build();
+		Client c1 = Client.builder().id(1l).nom("zouhir").build();
+		Client c2 = Client.builder().id(1l).nom("zhi").build();
 		System.out.println("comp ref : " + (c1 == c2));
 		List<Client> db1 = new ArrayList<>();
 		db1.add(c1);
