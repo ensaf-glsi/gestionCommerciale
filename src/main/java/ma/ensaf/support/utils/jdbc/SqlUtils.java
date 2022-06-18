@@ -159,11 +159,12 @@ public class SqlUtils {
 					.append(tableName).append(" where id = ?")
 					.toString();
 			System.out.println("findOne query : " + query);
-			PreparedStatement ps = connection.prepareStatement(query);
-			ps.setObject(1, id);
-			ResultSet rs = ps.executeQuery();
-			if (rs.next()) {
-				return rowMapper.apply(rs);
+			try (PreparedStatement ps = connection.prepareStatement(query)) {
+				ps.setObject(1, id);
+				ResultSet rs = ps.executeQuery();
+				if (rs.next()) {
+					return rowMapper.apply(rs);
+				}
 			}
 			return null;
 		} catch (SQLException e) {

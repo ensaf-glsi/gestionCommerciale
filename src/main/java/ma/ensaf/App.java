@@ -16,7 +16,7 @@ import ma.ensaf.support.utils.ReflectUtils;
 public class App {
 
     private List<Personne> personnes = new ArrayList<>();
-	ProductDao productDao = new ProductDao();
+	ProductDao productDao = ProductDao.getInstance();
 
     public App() {
         Personne p1 = new Personne(1L, "nom1", "prenom1", 21);
