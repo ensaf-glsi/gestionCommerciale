@@ -40,6 +40,11 @@ public class ClientsServlet extends HttpServlet {
 		out.println("</html>");
 	}
 
+	// CRUD
+	// C : CREATE
+	// R : READ (findById, findAll, find(criteres)
+	// U : Update
+	// D : Delete
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 //		requestInfo(req, resp);

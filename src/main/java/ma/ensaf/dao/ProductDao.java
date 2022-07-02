@@ -6,7 +6,7 @@ import ma.ensaf.support.dao.GenericDao;
 
 public class ProductDao extends GenericDao<Product> {
 	@Getter
-	private final static ProductDao instance = new ProductDao();
+	private static final ProductDao instance = new ProductDao();
 	private ProductDao() {}
 
 }

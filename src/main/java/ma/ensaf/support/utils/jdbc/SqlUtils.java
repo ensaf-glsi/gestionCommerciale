@@ -129,6 +129,7 @@ public class SqlUtils {
 				.append(fieldsBuilder.toString()).append(") values (")
 				.append(valuesBuilder.toString()).append(')');
 		System.out.println("query : " + queryBuilder);
+		System.out.println("params : " + params);
 		return insert(queryBuilder.toString(), params);
 	}
 	public static Long insert(String query, List<Object> params) {
@@ -196,6 +197,7 @@ public class SqlUtils {
 	 * @return
 	 */
 	public static <T> List<T> findList(String query, Function<ResultSet, T> rowMapper, Object... params) {
+		System.out.println("query : " + query);
 		List<T> list = new ArrayList<>();
 		Connection connection = JdbcConnection.getConnection();
 		try {
